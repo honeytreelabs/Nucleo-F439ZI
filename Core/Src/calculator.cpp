@@ -1,6 +1,7 @@
 #include <default_task_logic.hpp>
 #include <main.h>
 
+#include <array>
 #include <cstdint>
 #include <cstring>
 #include <stdexcept>
@@ -30,21 +31,21 @@ static RC transmitMsg(UART_HandleTypeDef *huart, std::string const &msg) {
 
 void DefaultTaskLogic() {
   for (;;) {
-    std::uint8_t buf[16] = {};
+    std::array<std::uint8_t, 16> buf{0};
 
     try {
       // operand 1
-      if (readUntil(&huart3, buf, sizeof(buf), ' ') != RC_OK) {
+      if (readUntil(&huart3, buf.data(), buf.max_size(), ' ') != RC_OK) {
         transmitMsg(
             &huart3,
             "Operand 1: Could not read until separator into buffer.\r\n");
         continue;
       }
       float operand_1;
-      operand_1 = std::stof(reinterpret_cast<char const *>(buf));
+      operand_1 = std::stof(reinterpret_cast<char const *>(buf.data()));
 
       // operator
-      if (readUntil(&huart3, buf, sizeof(buf), ' ') != RC_OK) {
+      if (readUntil(&huart3, buf.data(), buf.max_size(), ' ') != RC_OK) {
         transmitMsg(
             &huart3,
             "Operator: Could not read until separator into buffer.\r\n");
@@ -53,13 +54,14 @@ void DefaultTaskLogic() {
       auto const op = buf[0];
 
       // operand 2
-      if (readUntil(&huart3, buf, sizeof(buf), '\n') != RC_OK) {
+      if (readUntil(&huart3, buf.data(), buf.max_size(), '\n') != RC_OK) {
         transmitMsg(
             &huart3,
             "Operand 2: Could not read until separator into buffer.\r\n");
         continue;
       }
-      auto const operand_2 = std::stof(reinterpret_cast<char const *>(buf));
+      auto const operand_2 =
+          std::stof(reinterpret_cast<char const *>(buf.data()));
 
       switch (op) {
       case '+':
