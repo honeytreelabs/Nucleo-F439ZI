@@ -95,3 +95,4 @@ function(add_stm32_executable name source)
 endfunction()
 
 add_stm32_executable(stm32crypto Core/Src/crypto.cpp)
+add_stm32_executable(stm32calc Core/Src/calculator.cpp)
