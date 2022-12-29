@@ -1,4 +1,4 @@
-#include <cpp_code.hpp>
+#include <default_task_logic.hpp>
 #include <main.h>
 
 #include <stm32f4xx_hal_hash_ex.h>
@@ -44,7 +44,7 @@ static RC dumpHex(UART_HandleTypeDef *huart, std::uint8_t *buf,
   return RC_OK;
 }
 
-void myLoop(void) {
+void DefaultTaskLogic() {
   for (;;) {
     constexpr const std::size_t DIGEST_SIZE_SHA256 = 32; // bytes
     std::array<std::uint8_t, DIGEST_SIZE_SHA256> digest;

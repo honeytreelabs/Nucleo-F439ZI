@@ -94,4 +94,4 @@ function(add_stm32_executable name source)
   add_custom_target(${name} ALL DEPENDS ${elf_file}-size ${bin_file} ${hex_file} ${lss_file})
 endfunction()
 
-add_stm32_executable(stm32crypto Core/Src/cpp_code.cpp)
+add_stm32_executable(stm32crypto Core/Src/crypto.cpp)
