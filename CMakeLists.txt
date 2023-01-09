@@ -51,6 +51,18 @@ target_compile_definitions(stm32hal PUBLIC
   -DUSE_HAL_DRIVER
   -DSTM32F439xx)
 
+add_library(projbase OBJECT
+  startup_stm32f439xx.s
+  Core/Src/system_stm32f4xx.c
+  Core/Src/stm32f4xx_hal_timebase_tim.c
+  Core/Src/freertos.c
+  Core/Src/main.c
+  # the following two have to be linked as object files to override symbols from stm32hal
+  Core/Src/stm32f4xx_hal_msp.c
+  Core/Src/stm32f4xx_it.c)
+
+target_link_libraries(projbase PUBLIC stm32hal)
+
 get_filename_component(LINKER_SCRIPT STM32F439ZITx_FLASH.ld ABSOLUTE)
 
 function(add_stm32_executable name source)
@@ -60,18 +72,10 @@ function(add_stm32_executable name source)
   set(map_file ${name}.map)
   set(lss_file ${name}.lss)
 
-  add_executable(${elf_file}
-    ${source}
-    Core/Src/freertos.c
-    Core/Src/stm32f4xx_hal_timebase_tim.c
-    Core/Src/main.c
-    Core/Src/stm32f4xx_it.c
-    Core/Src/stm32f4xx_hal_msp.c
-    startup_stm32f439xx.s
-    Core/Src/system_stm32f4xx.c)
+  add_executable(${elf_file} ${source})
 
   target_link_libraries(${elf_file} PRIVATE
-    stm32hal
+    projbase
     -Wl,-Map=${map_file},--cref,--no-warn-mismatch
     -Wl,--gc-sections
     -T${LINKER_SCRIPT})
