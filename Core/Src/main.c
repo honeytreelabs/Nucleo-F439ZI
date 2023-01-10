@@ -62,6 +62,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_HASH_Init(void);
 void StartDefaultTask(void *argument);
+void BlinkTask(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -131,6 +132,7 @@ int main(void) {
    */
   defaultTaskHandle =
       osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  osThreadNew(BlinkTask, NULL, &defaultTask_attributes);
   /**
    * @}
    */
@@ -278,6 +280,15 @@ void StartDefaultTask(void *argument) {
   /* USER CODE BEGIN 5 */
   DefaultTaskLogic();
   /* USER CODE END 5 */
+}
+
+void BlinkTask(void *argument) {
+  for (;;) {
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
+    osDelay(1000);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+    osDelay(1000);
+  }
 }
 
 /**
