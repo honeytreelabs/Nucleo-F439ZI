@@ -57,6 +57,7 @@ add_library(projbase OBJECT
   Core/Src/stm32f4xx_hal_timebase_tim.c
   Core/Src/freertos.c
   Core/Src/main.c
+  Core/Src/entry.cpp
   # the following two have to be linked as object files to override symbols from stm32hal
   Core/Src/stm32f4xx_hal_msp.c
   Core/Src/stm32f4xx_it.c)

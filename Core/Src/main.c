@@ -20,6 +20,7 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include <default_task_logic.hpp>
+#include <entry.hpp>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -46,7 +47,7 @@ HASH_HandleTypeDef hhash;
 UART_HandleTypeDef huart3;
 
 /* Definitions for defaultTask */
-static osThreadId_t defaultTaskHandle;
+osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
     .name = "defaultTask",
     .stack_size = 128 * 4,
@@ -62,7 +63,6 @@ static void MX_GPIO_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_HASH_Init(void);
 void StartDefaultTask(void *argument);
-void BlinkTask(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -130,9 +130,7 @@ int main(void) {
   /**
    * @}
    */
-  defaultTaskHandle =
-      osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
-  osThreadNew(BlinkTask, NULL, &defaultTask_attributes);
+  entry();
   /**
    * @}
    */
@@ -279,17 +277,7 @@ static void MX_GPIO_Init(void) {
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void *argument) {
   /* USER CODE BEGIN 5 */
-  DefaultTaskLogic();
   /* USER CODE END 5 */
-}
-
-void BlinkTask(void *argument) {
-  for (;;) {
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
-    osDelay(1000);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
-    osDelay(1000);
-  }
 }
 
 /**
